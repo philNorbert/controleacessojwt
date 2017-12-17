@@ -6,15 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class RoleDTO implements Serializable {
-    private static final long serialVersionUID = 7102122678559656740L;
-    
-    private String name;
-    private List<AuthorityDTO> authorizations;
-    
+public class UserPasswordDTO implements Serializable {
+
+    private static final long serialVersionUID = 655745090000756997L;
+
+    private String confirmPassword;
+    private String newPassword;
+
 }

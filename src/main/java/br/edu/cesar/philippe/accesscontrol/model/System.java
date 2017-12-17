@@ -3,17 +3,7 @@ package br.edu.cesar.philippe.accesscontrol.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -41,5 +31,8 @@ public class System {
             joinColumns = {@JoinColumn(name = "SYSTEM_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "FEATURE_ID", referencedColumnName = "ID")})
     private List<Feature> features;
-    
+
+    public System(String name) {
+        this.name = name;
+    }
 }

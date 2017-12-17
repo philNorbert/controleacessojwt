@@ -1,7 +1,6 @@
-package br.edu.cesar.philippe.accesscontrol.service;
+package br.edu.cesar.philippe.accesscontrol.service.role;
 
 import br.edu.cesar.philippe.accesscontrol.exception.ResourceAlreadyExists;
-import br.edu.cesar.philippe.accesscontrol.exception.UsernameAlreadyExists;
 import br.edu.cesar.philippe.accesscontrol.model.Authority;
 import br.edu.cesar.philippe.accesscontrol.model.Role;
 import br.edu.cesar.philippe.accesscontrol.repository.AuthorityRepository;
@@ -19,22 +18,31 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RoleServiceImpl implements IRoleService{
 
-    private final RoleRepository roleRepository;
-    private final AuthorityRepository authorityRepository;
+    private RoleRepository roleRepository;
+    private AuthorityRepository authorityRepository;
 
-    public Role findOne(String name) {
-        Role role = roleRepository.findRoleByName(name);
+    @Override
+    public Role findOne(Long id) throws ResourceNotFoundException {
+        Role role = roleRepository.findOne(id);
         if (role == null) {
-            throw new ResourceNotFoundException(String.format("Perfil (%s) não encontrado!",name));
+            throw new ResourceNotFoundException(String.format("Perfil (%s) não encontrado!", id));
         }
         return role;
     }
-    
+
+    @Override
     public List<Role> findAll() {
         return roleRepository.findAll();
     }
 
-    public Role save(final RoleDTO roleDTO) throws ResourceAlreadyExists {
+    @Override
+    public void delete(Long id) throws ResourceNotFoundException {
+        Role role = this.findOne(id);
+        roleRepository.delete(role);
+    }
+
+    @Override
+    public Role save(RoleDTO roleDTO) throws ResourceAlreadyExists {
         String name = roleDTO.getName();
         Role role = roleRepository.findRoleByName(name);
         if(role != null) {
@@ -42,18 +50,25 @@ public class RoleServiceImpl implements IRoleService{
         }
         return roleRepository.save(new Role(name));
     }
-    
-    public Role update(Long id, final RoleDTO request) throws UsernameAlreadyExists{
-        
-        List<String> authNames = request.getAuthorizations().stream()
+
+    @Override
+    public Role update(Long id, RoleDTO roleDTO) throws ResourceNotFoundException {
+
+        List<String> authNames = roleDTO.getAuthorizations().stream()
                 .map(AuthorityDTO::getName)
                 .collect(Collectors.toList());
         List<Authority> authorities = authorityRepository.findAuthoritiesByNameIsIn(authNames);
-        
-        Role role = roleRepository.getOne(id);
-        role.setName();
-        
-        return
+
+        Role role = roleRepository.findOne(id);
+        if (role == null) {
+            throw new ResourceNotFoundException(String.format("Perfil (%s) não encontrado!", id));
+        }
+
+        role.setName(roleDTO.getName());
+        role.setAuthorities(authorities);
+        roleRepository.save(role);
+
+        return role;
     }
     
     

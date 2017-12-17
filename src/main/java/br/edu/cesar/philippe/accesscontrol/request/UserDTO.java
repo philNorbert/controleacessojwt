@@ -3,14 +3,12 @@ package br.edu.cesar.philippe.accesscontrol.request;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserDTO implements Serializable {
@@ -22,6 +20,7 @@ public class UserDTO implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
+    private Boolean enabled;
     private List<RoleDTO> roles;
 
 }
